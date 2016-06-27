@@ -1,0 +1,20 @@
+# Base URL
+#--------------------------
+appUrl = http://localhost:8080
+
+#Application details
+#--------------------------
+username = "admin"
+password = "admin"
+
+#Browser details
+#--------------------------
+browser = FireFox
+#browser = Chrome
+#browser = "IE"
+#browser = "Safari"
+
+#Selenium Settings
+screenShotDir = E:\\screenshots
+implicitTimeOutInMiliSec= 10000
+driverPath = E:\\drivers\\chrome\\win\\chromedriver.exe

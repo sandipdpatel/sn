@@ -1,0 +1,13 @@
+#directories
+*/bin
+*/reports
+*/lib
+*/ivy
+*/.project
+*/target
+*/.settings
+.recommenders
+.metadata
+
+#files
+selenium.properties

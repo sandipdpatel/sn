@@ -1,0 +1,109 @@
+<project name="Gurukula" default="resolve" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<property name="ivy.install.version" value="2.4.0"/>
+	<property name="ivy.jar.dir" value="${basedir}/ivy"/>
+	<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar"/>
+	<property name="maven.repo.url" value="https://repo1.maven.org/maven2/org/apache/ivy/ivy"/>
+	<property name="src" value="${basedir}/src" />
+	<property name="lib" value="${basedir}/lib" />
+	<property name="classes" value="${basedir}\target"/>
+	<property name="reports" value="${basedir}\reports"/>
+	
+	<property file="**/selenium.properties" />
+
+	<property name="junit4.showThrowable" value="ALWAYS"/>
+	<property name="junit4.showStackTraces" value="ALWAYS"/>
+	<property name="junit4.showOutput" value="ALWAYS"/>
+	<property name="junit4.showStatusOk" value="ALWAYS"/>
+	<property name="junit4.showStatusError" value="ALWAYS"/>
+	<property name="junit4.showStatusFailure" value="ALWAYS"/>
+	<property name="junit4.showStatusIgnored" value="ALWAYS"/>
+	<property name="junit4.showSuiteSummary" value="ALWAYS"/>
+	
+	<path id="test.classpath">
+		<pathelement path="${src}" />
+		<pathelement location="${classes}" />
+		<fileset dir="${lib}">
+            <include name="**/*.jar" />
+        </fileset>
+	</path>
+	
+	<path id="junit4.lib.path">
+		<fileset dir="${lib}" includes="*.jar"/>
+	</path>
+	
+	<taskdef resource="com/carrotsearch/junit4/antlib.xml" classpathref="junit4.lib.path" />
+	
+	<target name="init">
+		<mkdir dir="${classes}" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${classes}" />
+	</target>
+	
+	<target name="proxy">  
+	    <setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}"/>  
+	</target>
+	
+	<target name="download-ivy" unless="skip.download">
+		<mkdir dir="${ivy.jar.dir}"/>
+		<echo message="installing ivy..."/>
+		<get src="${maven.repo.url}/${ivy.install.version}/ivy-${ivy.install.version}.jar" dest="${ivy.jar.file}" usetimestamp="true"/>
+	</target>
+	
+	<target name="install-ivy" depends="download-ivy">
+		<path id="ivy.lib.path">
+			<fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+		</path>
+		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+	</target>
+	
+	<target name="resolve" depends="install-ivy">
+		<ivy:retrieve />
+	</target>
+	
+	<target name="compile" depends="init">
+		<echo>${lib}</echo>
+		<javac destdir="${classes}" source="1.8" includeantruntime="false" fork="true">
+			<src path="${src}" />
+			<classpath>
+				<path refid="test.classpath" />
+			</classpath>
+		</javac>
+	</target>
+	
+	<target name="cleanreport">
+		<delete dir="${reports}" />
+		<mkdir dir="${reports}" />
+	</target>
+	
+	<target name="smoke" depends="compile, cleanreport">
+		<mkdir dir="${reports}" />
+		<junit4 printsummary="yes" haltonfailure="no" failureProperty="failed">
+			<classpath>
+				<path refid="test.classpath" />
+				<pathelement path="${basedir}" />
+			</classpath>
+			<listeners>
+				<report-text showThrowable="${junit4.showThrowable}" showStackTraces="${junit4.showStackTraces}" showOutput="${junit4.showOutput}" showStatusOk="${junit4.showStatusOk}" showStatusError="${junit4.showStatusError}" showStatusFailure="${junit4.showStatusFailure}" showStatusIgnored="${junit4.showStatusIgnored}" showSuiteSummary="${junit4.showSuiteSummary}" />
+				<report-ant-xml dir="${reports}/xml" mavenExtensions="true" />
+				<report-json file="${reports}/html/index.html" projectName="${ant.project.name}-Smoke" outputStreams="yes"/>
+			</listeners>
+			<fileset dir="${classes}" includes="**/SmokeTestSuite.java,**/SmokeTestSuite.class" />
+		</junit4>
+	</target>
+		
+	<target name="regression" depends="compile, cleanreport">
+		<junit4 printsummary="yes" haltonfailure="no" failureProperty="failed">
+			<classpath>
+				<path refid="test.classpath" />
+				<pathelement path="${basedir}" />
+			</classpath>
+			<listeners>
+				<report-text showThrowable="${junit4.showThrowable}" showStackTraces="${junit4.showStackTraces}" showOutput="${junit4.showOutput}" showStatusOk="${junit4.showStatusOk}" showStatusError="${junit4.showStatusError}" showStatusFailure="${junit4.showStatusFailure}" showStatusIgnored="${junit4.showStatusIgnored}" showSuiteSummary="${junit4.showSuiteSummary}" />
+				<report-json file="${reports}/html/index.html" projectName="${ant.project.name}-Regression" outputStreams="yes"/>
+			</listeners>
+			<fileset dir="${classes}" includes="**/RegressionTestSuite.java,**/RegressionTestSuite.class" />
+		</junit4>
+	</target>
+</project>

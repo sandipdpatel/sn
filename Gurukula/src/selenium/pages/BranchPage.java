@@ -32,12 +32,30 @@ public class BranchPage extends CommonHomePage {
 		return new ModalPage();
 	}
 
-	public void searchBranch(String searchText) {
+	public BranchPage searchBranch(String searchText) {
 		searchBox.setText(searchText);
 		searchButton.click();
+		waitForReady(1);
+		return this;
 	}
 
-	public void createBranch(Branch branch) {
+	public BranchPage clearSearch(String searchText) {
+		searchBox.clear();
+		searchButton.click();
+		return this;
+	}
 
+	public BranchPage createBranch(Branch branch) {
+		BranchPage branchPage = new HomePage().openBranch();
+		ModalPage modal = branchPage.clickCreateBranch();
+		modal.setFields(branch).clickSave();
+		return this;
+	}
+
+	public BranchPage deleteBranch(String name) {
+		BranchPage branchPage = new HomePage().openBranch();
+		ModalPage modalPage = branchTable.deleteRowByName(name);
+		modalPage.clickDelete();
+		return this;
 	}
 }

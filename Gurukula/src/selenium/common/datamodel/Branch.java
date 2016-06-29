@@ -8,5 +8,7 @@ public class Branch {
 
 	public Branch(Integer id, String name, String code) {
 		this.id = id;
+		this.name = name;
+		this.code = code;
 	}
 }

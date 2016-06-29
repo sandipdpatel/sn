@@ -22,7 +22,14 @@ public class Grid extends BaseElement {
 	}
 
 	public ModalPage deleteRowByName(String name) {
-		element.findElement(By.cssSelector("td:nth-child(2):contains(" + name + ")~td>button:last-child")).click();
+		jsExecutor.executeScript(
+				"console.log($(arguments[0])); console.log($(arguments[0]).find('td:nth-child(2):contains(" + name
+						+ ")~td>button:last-child')); $(arguments[0]).find('td:nth-child(2):contains(" + name + ")~td>button:last-child').click()",
+				element);
 		return new ModalPage();
+	}
+
+	public int getRowsCount() {
+		return element.findElements(By.cssSelector("tbody tr")).size();
 	}
 }

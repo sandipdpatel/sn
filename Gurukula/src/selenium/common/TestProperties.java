@@ -31,11 +31,11 @@ public class TestProperties {
 	private final static String BROWSER = "browser";
 	private final static String DRIVER_PATH = "driverPath";
 	private final static String SCREENSHOT_DIR = "screenShotDir";
-	private final static String IMPLICIT_WAIT_TIMEOUT = "implicitTimeOutInMiliSec";
+	private final static String IMPLICIT_WAIT_TIMEOUT = "implicitTimeOutInSec";
 
 	private final static String DEFAULT_APP_URL = "http://localhost:8080";
 	private final static String DEFAULT_USERNAME = "admin";
-	private final static String DEFAULT_COMP_LOAD_TIMEOUT = "20000";
+	private final static String DEFAULT_COMP_LOAD_TIMEOUT = "10";
 
 	private static TestProperties propertyInstance;
 	private static Map<Long, TestProperties> instanceMap = Collections
@@ -176,7 +176,7 @@ public class TestProperties {
 	}
 
 	public void setTimeouts() {
-		setTimeouts(timeOut, TimeUnit.MILLISECONDS);
+		setTimeouts(timeOut, TimeUnit.SECONDS);
 	}
 
 	public void setTimeouts(int waitTime, TimeUnit unit) {

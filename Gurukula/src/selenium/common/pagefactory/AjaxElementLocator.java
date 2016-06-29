@@ -27,7 +27,7 @@ public class AjaxElementLocator extends DefaultElementLocator {
 
 	@Override
 	public WebElement findElement() {
-		timeOutInSeconds = TestProperties.getInstance().getWaitTime() / 1000;
+		timeOutInSeconds = TestProperties.getInstance().getWaitTime();
 		SlowLoadingElement loadingElement = new SlowLoadingElement(clock, timeOutInSeconds);
 		try {
 			return loadingElement.get().getElement();

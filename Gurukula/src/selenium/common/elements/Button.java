@@ -13,7 +13,7 @@ public class Button extends BaseElement {
 		if (!element.isEnabled()) {
 			throw new RuntimeException(element + " is not enabled");
 		}
-		click();
+		element.click();
 	}
 
 	public String getLabel() {

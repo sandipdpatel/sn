@@ -30,7 +30,7 @@ public class BaseElement implements WebElement {
 
 	protected final WebDriver driver = TestProperties.getInstance().getDriver();
 	protected final JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
-	private static final Logger logger = LogManager.getLogger(BaseElement.class);
+	protected static final Logger logger = LogManager.getLogger(BaseElement.class);
 
 	protected WebElement element;
 

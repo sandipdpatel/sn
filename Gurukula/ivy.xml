@@ -9,5 +9,6 @@
 		</dependency>
 		<dependency org="org.seleniumhq.selenium" name="selenium-server" rev="2.53.0" />
 		<dependency org="com.carrotsearch.randomizedtesting" name="junit4-ant" rev="2.3.4"/>
+		<dependency org="org.apache.commons" name="commons-lang3" rev="3.4"/>
     </dependencies>
 </ivy-module>

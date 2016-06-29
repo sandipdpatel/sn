@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -26,18 +27,10 @@ public class BasePage {
 	protected final JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
 
 	public BasePage waitForReady() {
-		return waitForReady(defaultWaitTimeout, false);
-	}
-
-	public BasePage waitForReady(boolean withSave) {
-		return waitForReady(defaultWaitTimeout, withSave);
+		return waitForReady(defaultWaitTimeout);
 	}
 
 	public BasePage waitForReady(int secondsToSleep) {
-		return waitForReady(secondsToSleep, false);
-	}
-
-	public BasePage waitForReady(int secondsToSleep, boolean withSave) {
 		JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
 		javascriptExecutor.executeScript("if (window.jQuery) { window.jQuery.fx.off = true; }");
 		if (!isPageReady()) {
@@ -64,19 +57,18 @@ public class BasePage {
 		FluentWait<By> wait = new FluentWait<By>(by).withTimeout(timeout, TimeUnit.SECONDS);
 		wait = wait.pollingEvery(100, TimeUnit.MILLISECONDS);
 
-		wait.withMessage("waitForElement timed out. Element " + by.toString() + " is not present")
-				.until(new Predicate<By>() {
-					@Override
-					public boolean apply(By by) {
-						try {
-							driver.findElement(by);
-							return true;
-						} catch (final NoSuchElementException e) {
-							LOGGER.debug("Waiting for element to load", by);
-							return false;
-						}
-					}
-				});
+		wait.withMessage("waitForElement timed out. Element " + by.toString() + " is not present").until(new Predicate<By>() {
+			@Override
+			public boolean apply(By by) {
+				try {
+					driver.findElement(by);
+					return true;
+				} catch (final NoSuchElementException e) {
+					LOGGER.debug("Waiting for element to load", by);
+					return false;
+				}
+			}
+		});
 
 		return driver.findElement(by);
 	}
@@ -132,22 +124,71 @@ public class BasePage {
 	}
 
 	public void waitForElement(BaseElement element, long secondsToWait) {
-		FluentWait<BaseElement> wait = new FluentWait<BaseElement>(element).withTimeout(secondsToWait,
-				TimeUnit.SECONDS);
+		FluentWait<BaseElement> wait = new FluentWait<BaseElement>(element).withTimeout(secondsToWait, TimeUnit.SECONDS);
 		wait = wait.pollingEvery(100, TimeUnit.MILLISECONDS);
 
-		wait.withMessage("waitForReady timed out. Element " + element.toString() + " is still not present")
+		wait.withMessage("waitForReady timed out. Element " + element.toString() + " is still not present").until(new Predicate<BaseElement>() {
+			@Override
+			public boolean apply(BaseElement element) {
+				try {
+					if (element.isDisplayed()) {
+						return true;
+					}
+				} catch (final NoSuchElementException e) {
+					return false;
+				}
+				return true;
+			}
+		});
+	}
+
+	public void waitForElementToDisappear(By by) {
+		waitForElementToDisappear(by, defaultWaitTimeout);
+	}
+
+	public void waitForElementToDisappear(By by, long secondsToWait) {
+		final FluentWait<By> wait = new FluentWait<By>(by).withTimeout(secondsToWait, TimeUnit.SECONDS);
+
+		wait.withMessage("waitForElementToDisappear timed out. Element " + by.toString() + " is still present")
+				.until(new Predicate<org.openqa.selenium.By>() {
+					@Override
+					public boolean apply(org.openqa.selenium.By by) {
+						TestProperties.getInstance().setTimeouts(0, TimeUnit.SECONDS);
+						try {
+							if (!driver.findElement(by).isDisplayed()) {
+								return true;
+							}
+						} catch (final NoSuchElementException e) {
+							return true;
+						} catch (final StaleElementReferenceException ef) {
+							return true;
+						} finally {
+							TestProperties.getInstance().setTimeouts();
+						}
+						return false;
+					}
+				});
+	}
+
+	public void waitForElementToDisappear(BaseElement element) {
+		waitForElementToDisappear(element, defaultWaitTimeout);
+	}
+
+	public void waitForElementToDisappear(BaseElement element, long secondsToWait) {
+		final FluentWait<BaseElement> wait = new FluentWait<BaseElement>(element).withTimeout(secondsToWait, TimeUnit.SECONDS);
+
+		wait.withMessage("waitForElementToDisappear timed out. Element " + element.toString() + " is still present")
 				.until(new Predicate<BaseElement>() {
 					@Override
 					public boolean apply(BaseElement element) {
 						try {
-							if (element.isDisplayed()) {
+							if (!element.isDisplayed()) {
 								return true;
 							}
 						} catch (final NoSuchElementException e) {
-							return false;
+							return true;
 						}
-						return true;
+						return false;
 					}
 				});
 	}
@@ -190,8 +231,7 @@ public class BasePage {
 		docReadyState = (Boolean) javascriptExecutor.executeScript("return document.readyState == 'complete'");
 
 		// wait for jQuery animations to complete
-		jQueryReady = (Boolean) javascriptExecutor
-				.executeScript("return (typeof(jQuery) != 'undefined') && jQuery.isReady");
+		jQueryReady = (Boolean) javascriptExecutor.executeScript("return (typeof(jQuery) != 'undefined') && jQuery.isReady");
 
 		// wait for jQuery animations to complete
 		jQueryAnimationDone = (Boolean) javascriptExecutor

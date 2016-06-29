@@ -1,4 +1,4 @@
-package selenium.testcases;
+package selenium.testcases.common;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +24,10 @@ import org.openqa.selenium.WebDriver;
 
 import selenium.common.FailureMonitor;
 import selenium.common.TestProperties;
+import selenium.common.pagefactory.CustomPageFactory;
+import selenium.pages.AuthenticationPage;
+import selenium.pages.HomePage;
+import selenium.pages.WelcomePage;
 
 public class BaseTestCase implements FailureMonitor {
 
@@ -63,13 +67,13 @@ public class BaseTestCase implements FailureMonitor {
 			isLoggedIn = false;
 
 			String[] classParts = desc.getClassName().split("\\.");
-			String testClass = classParts[classParts.length - 1];
+			String testClassName = classParts[classParts.length - 1];
 			if (fail) {
-				logger.info("Test {}#{} failed, see log details above", testClass, desc.getMethodName());
-				Assert.fail("Test Case " + testClass + "#" + desc.getMethodName() + " failed due to: "
-						+ buffer.toString() + "\nsee log for details.");
+				logger.info("Test {} # {} failed", testClassName, desc.getMethodName());
+				Assert.fail("Test Case " + testClassName + "#" + desc.getMethodName() + " failed due to: " + buffer.toString()
+						+ "\nsee log for details.");
 			} else {
-				logger.info("Finished Running Test {}#{} ...", testClass, desc.getMethodName());
+				logger.info("Finished Running Test, {} # {} ...", testClassName, desc.getMethodName());
 			}
 		}
 
@@ -83,8 +87,8 @@ public class BaseTestCase implements FailureMonitor {
 			if (screenshotPath != null) {
 				File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 				String[] className = description.getClassName().split("\\.");
-				File destFile = new File(screenshotPath, className[className.length - 1] + "_"
-						+ description.getMethodName() + "_" + getTimeStamp() + ".png");
+				File destFile = new File(screenshotPath,
+						className[className.length - 1] + "_" + description.getMethodName() + "_" + getTimeStamp() + ".png");
 				try {
 					FileUtils.copyFile(scrFile, destFile);
 				} catch (IOException ex) {
@@ -100,16 +104,15 @@ public class BaseTestCase implements FailureMonitor {
 		}
 	};
 
-	public void startUp(TestProperties appProperties) {
-		driver.get(appProperties.getUrl());
-		logger.info("Browse to login page");
+	public void startUp(TestProperties properties) {
+		driver.get(properties.getUrl());
+		logger.info("Browsing to login page");
 	}
 
 	@Before
-	public final void setUp() throws Exception {
-
+	public void setUp() throws Exception {
 		if (!isLoggedIn) {
-			login();
+			login(TestProperties.getInstance().getUsername(), TestProperties.getInstance().getPassword());
 			isLoggedIn = true;
 		}
 	}
@@ -120,8 +123,10 @@ public class BaseTestCase implements FailureMonitor {
 		isLoggedIn = false;
 	}
 
-	private void login() {
-
+	public HomePage login(String username, String password) {
+		WelcomePage welcomePage = CustomPageFactory.initElements(WelcomePage.class);
+		AuthenticationPage authPage = welcomePage.navigateToLogin();
+		return authPage.authenticate(username, password);
 	}
 
 	@Override
@@ -137,5 +142,9 @@ public class BaseTestCase implements FailureMonitor {
 	@Override
 	public void flushExceptions() {
 		exceptions.clear();
+	}
+
+	public void navigateTo(String path) {
+		driver.navigate().to(TestProperties.getInstance().getUrl() + "/#/" + path);
 	}
 }

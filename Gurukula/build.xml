@@ -31,8 +31,6 @@
 		<fileset dir="${lib}" includes="*.jar"/>
 	</path>
 	
-	<taskdef resource="com/carrotsearch/junit4/antlib.xml" classpathref="junit4.lib.path" />
-	
 	<target name="init">
 		<mkdir dir="${classes}" />
 	</target>
@@ -70,6 +68,7 @@
 				<path refid="test.classpath" />
 			</classpath>
 		</javac>
+		<taskdef resource="com/carrotsearch/junit4/antlib.xml" classpathref="junit4.lib.path" />
 	</target>
 	
 	<target name="cleanreport">
@@ -80,6 +79,7 @@
 	<target name="smoke" depends="compile, cleanreport">
 		<mkdir dir="${reports}" />
 		<junit4 printsummary="yes" haltonfailure="no" failureProperty="failed">
+			<sysproperty key="log4j.configurationFile" value="${log4j.xml.path}" />
 			<classpath>
 				<path refid="test.classpath" />
 				<pathelement path="${basedir}" />

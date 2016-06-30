@@ -10,14 +10,14 @@
 	
 	<property file="**/selenium.properties" />
 
-	<property name="junit4.showThrowable" value="ALWAYS"/>
-	<property name="junit4.showStackTraces" value="ALWAYS"/>
+	<property name="junit4.showThrowable" value="true"/>
+	<property name="junit4.showStackTraces" value="true"/>
 	<property name="junit4.showOutput" value="ALWAYS"/>
-	<property name="junit4.showStatusOk" value="ALWAYS"/>
-	<property name="junit4.showStatusError" value="ALWAYS"/>
-	<property name="junit4.showStatusFailure" value="ALWAYS"/>
-	<property name="junit4.showStatusIgnored" value="ALWAYS"/>
-	<property name="junit4.showSuiteSummary" value="ALWAYS"/>
+	<property name="junit4.showStatusOk" value="true"/>
+	<property name="junit4.showStatusError" value="true"/>
+	<property name="junit4.showStatusFailure" value="true"/>
+	<property name="junit4.showStatusIgnored" value="true"/>
+	<property name="junit4.showSuiteSummary" value="true"/>
 	
 	<path id="test.classpath">
 		<pathelement path="${src}" />
@@ -78,7 +78,7 @@
 	
 	<target name="smoke" depends="compile, cleanreport">
 		<mkdir dir="${reports}" />
-		<junit4 printsummary="yes" haltonfailure="no" failureProperty="failed">
+		<junit4 printsummary="on" haltonfailure="no" failureProperty="failed">
 			<sysproperty key="log4j.configurationFile" value="${log4j.xml.path}" />
 			<classpath>
 				<path refid="test.classpath" />
@@ -94,7 +94,7 @@
 	</target>
 		
 	<target name="regression" depends="compile, cleanreport">
-		<junit4 printsummary="yes" haltonfailure="no" failureProperty="failed">
+		<junit4 printsummary="on" haltonfailure="no" failureProperty="failed">
 			<classpath>
 				<path refid="test.classpath" />
 				<pathelement path="${basedir}" />

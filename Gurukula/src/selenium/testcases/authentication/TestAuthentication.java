@@ -17,6 +17,7 @@ import selenium.pages.HomePage;
 import selenium.testcases.common.BaseTestCase;
 
 @RunWith(Parameterized.class)
+@Category(RegressionTest.class)
 public class TestAuthentication extends BaseTestCase {
 	private User user;
 	private String objective;
@@ -48,7 +49,6 @@ public class TestAuthentication extends BaseTestCase {
 	 * Welcome page for new users
 	 */
 	@Test
-	@Category(RegressionTest.class)
 	public void testAuthenticationLoginLink() throws Exception {
 		HomePage homePage = login(user.username, user.password);
 

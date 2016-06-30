@@ -1,6 +1,8 @@
 package selenium.pages;
 
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.Select;
 
 import selenium.common.datamodel.Branch;
 import selenium.common.datamodel.Staff;
@@ -19,8 +21,11 @@ public class ModalPage extends BasePage {
 	@FindBy(css = "#saveBranchModal input[name=name], #saveStaffModal input[name=name]")
 	public TextBox name;
 
-	@FindBy(css = "#saveBranchModal input[name=name], #saveStaffModal input[name=name]")
-	public TextBox Branch;
+	@FindBy(css = "#saveBranchModal input[name=code], #saveStaffModal input[name=code]")
+	public TextBox code;
+
+	@FindBy(css = "#saveStaffModal select[name=\"related_branch\"]")
+	private WebElement branch;
 
 	@FindBy(css = "#saveBranchModal button[type=submit], #saveStaffModal button[type=submit]")
 	public Button save;
@@ -42,13 +47,13 @@ public class ModalPage extends BasePage {
 
 	public ModalPage setFields(Branch branch) {
 		name.setText(branch.name);
-		branch.setText(branch.code);
+		code.setText(branch.code);
 		return this;
 	}
 
 	public ModalPage setFields(Staff staff) {
 		name.setText(staff.name);
-		code.setText(staff.branch);
+		new Select(branch).selectByVisibleText(staff.branch);
 		return this;
 	}
 

@@ -15,26 +15,24 @@ import selenium.testcases.common.BaseTestCase;
 public class TestBranch extends BaseTestCase {
 
 	private Branch branch;
+	private BranchPage branchPage;
 
 	@Before
 	public void setUpBranch() {
 		branch = new Branch(null, RandomStringUtils.randomAlphabetic(5), RandomStringUtils.randomAlphanumeric(2).toUpperCase());
+		branchPage = new HomePage().openBranch();
+		branchPage.createBranch(branch).searchBranch(branch.name);
 	}
 
 	@Test
 	@Category(RegressionTest.class)
 	public void testCreateBranch() {
-		BranchPage branchPage = new HomePage().openBranch();
-		branchPage.createBranch(branch).searchBranch(branch.name);
-
 		Verify.verifyEquals(this, "branch is not found", 1, branchPage.branchTable.getRowsCount());
 	}
 
 	@Test
 	@Category(RegressionTest.class)
 	public void testDeleteBranch() {
-		BranchPage branchPage = new HomePage().openBranch();
-		branchPage.createBranch(branch).searchBranch(branch.name);
 		Verify.verifyEquals(this, "branch is not found", 1, branchPage.branchTable.getRowsCount());
 
 		branchPage.deleteBranch(branch.name).searchBranch(branch.name);

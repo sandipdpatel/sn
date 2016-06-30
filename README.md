@@ -37,3 +37,10 @@
  ant proxy clean resolve regression -Dproxy.host=<proxy_host> -Dproxy.port=<proxy_port> -Dlog4j.xml.path=<log4j2 directory>
  ```
  
+#### Reporting
+* __HTML__
+ * HTML report will be generated at `Gurukula\reports\html\index.html`
+* __Console__
+ * ANT console will show suite/test level summary of execution and result
+* __Log__
+ * Log file will be generated at the location configured in log4j2.xml

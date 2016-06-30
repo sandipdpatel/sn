@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+  <Appenders>
+    <File name="FileAppender" fileName="C:\\log4j\\logs\\gurukula.log" append="false">
+      <PatternLayout pattern="[%p] %c:%L - %m%n"/>
+    </File>
+    <Console name="ConsoleAppender" target="SYSTEM_OUT">
+      <PatternLayout pattern="[%p] %c:%L - %m%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="com.oracle.pgbu" level="info" additivity="false">
+      <!--Logger writes to both console and file appenders-->
+      <AppenderRef ref="ConsoleAppender"/>
+      <AppenderRef ref="FileAppender"/>
+    </Logger>
+    <Root level="info">
+      <AppenderRef ref="ConsoleAppender"/>
+      <AppenderRef ref="FileAppender"/>
+    </Root>
+  </Loggers>
+</Configuration>

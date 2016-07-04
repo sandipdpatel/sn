@@ -2,9 +2,11 @@ package selenium.pages;
 
 import java.util.List;
 
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 
+import selenium.common.datamodel.User;
 import selenium.common.elements.Alert;
 import selenium.common.elements.BaseElement;
 import selenium.common.elements.Button;
@@ -17,7 +19,7 @@ public class RegistrationPage extends WelcomePage {
 	@FindBy(css = "h1[translate=\"register.title\"]")
 	public Label title;
 
-	@FindBy(css = "div[translate=\"register.messages.error.fail\")]")
+	@FindBy(css = "div[translate=\"register.messages.error.fail\"]")
 	public Alert failureAlert;
 
 	@FindBy(css = "input[name=login]")
@@ -63,5 +65,23 @@ public class RegistrationPage extends WelcomePage {
 	public AuthenticationPage clickLoginLink() {
 		loginLink.click();
 		return new AuthenticationPage();
+	}
+
+	public RegistrationPage registerUser(User user) {
+		this.login.setText(user.username);
+		this.email.setText(user.email);
+		this.newPassword.setText(user.password);
+		this.confirmPassword.setText(user.confirmPassword);
+		register.click();
+		return this;
+	}
+
+	public boolean hasError() {
+		try {
+			waitForElement(failureAlert);
+			return true;
+		} catch (NoSuchElementException e) {
+			return false;
+		}
 	}
 }

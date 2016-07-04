@@ -5,6 +5,7 @@ import org.openqa.selenium.support.FindBy;
 import selenium.common.datamodel.Staff;
 import selenium.common.elements.Button;
 import selenium.common.elements.Grid;
+import selenium.common.elements.Pager;
 import selenium.common.elements.TextBox;
 import selenium.common.pagefactory.CustomPageFactory;
 
@@ -21,6 +22,9 @@ public class StaffPage extends CommonHomePage {
 
 	@FindBy(css = ".table")
 	public Grid staffTable;
+
+	@FindBy(css = ".pager")
+	public Pager pager;
 
 	public StaffPage() {
 		CustomPageFactory.initElements(this);

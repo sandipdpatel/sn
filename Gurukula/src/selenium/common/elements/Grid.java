@@ -1,5 +1,7 @@
 package selenium.common.elements;
 
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -29,7 +31,11 @@ public class Grid extends BaseElement {
 		return new ModalPage();
 	}
 
+	public List<WebElement> getAllRows() {
+		return element.findElements(By.cssSelector("tbody tr"));
+	}
+
 	public int getRowsCount() {
-		return element.findElements(By.cssSelector("tbody tr")).size();
+		return getAllRows().size();
 	}
 }

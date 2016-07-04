@@ -14,10 +14,12 @@ public class User {
 	}
 
 	public User(String username, String password, String confirmPassword, String email, boolean success) {
-		this.username = username;
-		this.password = password;
-		this.success = success;
+		this(username, password, success);
 		this.confirmPassword = confirmPassword;
 		this.email = email;
+	}
+
+	public User(String username, String password, String email, boolean success) {
+		this(username, password, password, email, success);
 	}
 }

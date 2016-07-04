@@ -40,3 +40,17 @@
  ant proxy clean resolve regression -Dproxy.host=<proxy_host> -Dproxy.port=<proxy_port> -Dlog4j.xml.path=<log4j2 directory>
  ```
  
+#### Features Tested
+* Authentication
+* Registration
+* Branch
+* Staff
+
+#### Issues Found
+* User registration failure
+* Reset password not functional for admin
+* Automatic login for user after logout
+* Application access post invalidation of session
+* Password strength meter reset after clearing new password field
+* Pagging issue in Branch page
+* Pagging issue in Staff page
